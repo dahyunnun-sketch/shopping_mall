@@ -29,19 +29,19 @@ const SignIn = ({onLogin}) => {
         // 유효성 검사
         if(!username.trim() || !password.trim()){
             alert("모든 항목을 입력하세요.");
+            return;
         }
 
         // 서버에 로그인 요청
         try{
            const response = await api.get(`/users/${username}`);
-           console.log(response);
            // 아이디 있음(user.username)
            const user = response.data; // 서버에서 받아온 사용자 정보
            // 비밀번호 확인(db에 있는 비번과 외부에서 입력한 비번 비교)
-           if(user.password === password){
+              if(user && user.password === password){
               setLoginResult("success");
               // 로그인 성공시 부모컴포넌트(App.jsx)에 로그인 상태 저장
-              onLogin(user.username);
+                  onLogin(user.username, user.role);
               alert("로그인 되었습니다.");
               navigate('/');  // 메인페이지로 이동
            }else{

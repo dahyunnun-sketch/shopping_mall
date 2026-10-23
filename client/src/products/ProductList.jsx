@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
+    const [loadError, setLoadError] = useState("");
 
     // 검색 키워드 상태 관리 
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -14,9 +15,13 @@ const ProductList = () => {
             try{
                 //'http://localhost:8000/api/products'
                 const response = await api.get('/products');
-                setProducts(response.data) // data 속성 불러줌
+                if (!Array.isArray(response.data)) {
+                    throw new Error(response.data?.message || "상품 목록 응답 형식이 올바르지 않습니다.");
+                }
+                setProducts(response.data); // data 속성 불러줌
             }catch(error){
-                console.log("상품 목록 조회 에러: ", err);
+                console.log("상품 목록 조회 에러: ", error);
+                setLoadError(error.response?.data?.message || error.message || "상품 목록을 불러오지 못했습니다.");
             }
         }
         fetchProducts();  //함수 호출해야 실행됨
@@ -37,6 +42,7 @@ const ProductList = () => {
                     onChange={(e) => setSearchKeyword(e.target.value)}
                 />
             </div>
+            {loadError && <p role="alert">상품 목록 조회 실패: {loadError}</p>}
             {/* 상품 목록 */}
             <table>
                 <thead>

@@ -72,7 +72,7 @@ app.get("/api/products", (req, res) => {
     db.query(sql, (err, result) => { // results -> result로 변경
         if(err){
             console.log("상품 조회 오류!! ", err);
-            res.send("상품 조회 중 오류 발생!!");
+            res.status(500).json({ message: "상품 조회 중 오류가 발생했습니다." });
             return;
         }
         // res.json(results); //json 형태로 응답(전체 정보 출력)
@@ -170,10 +170,10 @@ app.post("/api/users", (req, res) => {
     db.query(sql, [username, password, email], (err) => {
         if(err){
             console.log("회원 가입 에러: ", err);
-            res.send("회원 가입 중 오류가 발생했습니다.");
+            res.status(500).json({ message: "회원 가입 중 오류가 발생했습니다." });
             return;
         }
-        res.send("회원이 성공적으로 가입되었습니다.");
+        res.status(201).json({ message: "회원이 성공적으로 가입되었습니다." });
     });
 });
 
